@@ -86,7 +86,7 @@ class MobileAdTargetingInfo {
     };
 
     if (keywords != null && keywords!.isNotEmpty) {
-      assert(keywords!.every((String s) => s != null && s.isNotEmpty));
+      assert(keywords!.every((String s) => s.isNotEmpty));
       json['keywords'] = keywords;
     }
     if (nonPersonalizedAds != null)
@@ -99,7 +99,7 @@ class MobileAdTargetingInfo {
       json['designedForFamilies'] = designedForFamilies;
     if (childDirected != null) json['childDirected'] = childDirected;
     if (testDevices != null && testDevices!.isNotEmpty) {
-      assert(testDevices!.every((String s) => s != null && s.isNotEmpty));
+      assert(testDevices!.every((String s) => s.isNotEmpty));
       json['testDevices'] = testDevices;
     }
 
@@ -295,7 +295,7 @@ class BannerAd extends MobileAd {
     return _invokeBooleanMethod('loadBannerAd', <String, dynamic>{
       'id': id,
       'adUnitId': adUnitId,
-      'targetingInfo': targetingInfo?.toJson(),
+      'targetingInfo': targetingInfo.toJson(),
       'width': size.width,
       'height': size.height,
       'adSizeType': size.adSizeType.toString(),
@@ -351,7 +351,7 @@ class NativeAd extends MobileAd {
     return _invokeBooleanMethod('loadNativeAd', <String, dynamic>{
       'id': id,
       'factoryId': factoryId,
-      'targetingInfo': targetingInfo?.toJson(),
+      'targetingInfo': targetingInfo.toJson(),
       'adUnitId': adUnitId,
       'customOptions': customOptions,
     });
@@ -382,7 +382,7 @@ class InterstitialAd extends MobileAd {
     return _invokeBooleanMethod('loadInterstitialAd', <String, dynamic>{
       'id': id,
       'adUnitId': adUnitId,
-      'targetingInfo': targetingInfo?.toJson(),
+      'targetingInfo': targetingInfo.toJson(),
     });
   }
 }
@@ -502,7 +502,7 @@ class RewardedVideoAd {
     assert(adUnitId.isNotEmpty);
     return _invokeBooleanMethod('loadRewardedVideoAd', <String, dynamic>{
       'adUnitId': adUnitId,
-      'targetingInfo': targetingInfo?.toJson(),
+      'targetingInfo': targetingInfo.toJson(),
     });
   }
 }
@@ -577,8 +577,7 @@ class FirebaseAdMob {
       {required String appId,
       String? trackingId,
       bool analyticsEnabled = false}) {
-    assert(appId != null && appId.isNotEmpty);
-    assert(analyticsEnabled != null);
+    assert(appId.isNotEmpty);
     return _invokeBooleanMethod('initialize', <String, dynamic>{
       'appId': appId,
       'trackingId': trackingId,
