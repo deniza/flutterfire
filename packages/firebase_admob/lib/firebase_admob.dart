@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @dart=2.9
+
 
 // ignore_for_file: deprecated_member_use_from_same_package
 
@@ -67,39 +67,39 @@ class MobileAdTargetingInfo {
       this.testDevices,
       this.nonPersonalizedAds});
 
-  final List<String> keywords;
-  final String contentUrl;
+  final List<String>? keywords;
+  final String? contentUrl;
   @Deprecated('This functionality is deprecated in AdMob without replacement.')
-  final DateTime birthday;
+  final DateTime? birthday;
   @Deprecated('This functionality is deprecated in AdMob without replacement.')
-  final MobileAdGender gender;
+  final MobileAdGender? gender;
   @Deprecated(
       'This functionality is deprecated in AdMob.  Use `childDirected` instead.')
-  final bool designedForFamilies;
-  final bool childDirected;
-  final List<String> testDevices;
-  final bool nonPersonalizedAds;
+  final bool? designedForFamilies;
+  final bool? childDirected;
+  final List<String>? testDevices;
+  final bool? nonPersonalizedAds;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = <String, dynamic>{
       'requestAgent': 'flutter-alpha',
     };
 
-    if (keywords != null && keywords.isNotEmpty) {
-      assert(keywords.every((String s) => s != null && s.isNotEmpty));
+    if (keywords != null && keywords!.isNotEmpty) {
+      assert(keywords!.every((String s) => s != null && s.isNotEmpty));
       json['keywords'] = keywords;
     }
     if (nonPersonalizedAds != null)
       json['nonPersonalizedAds'] = nonPersonalizedAds;
-    if (contentUrl != null && contentUrl.isNotEmpty)
+    if (contentUrl != null && contentUrl!.isNotEmpty)
       json['contentUrl'] = contentUrl;
-    if (birthday != null) json['birthday'] = birthday.millisecondsSinceEpoch;
-    if (gender != null) json['gender'] = gender.index;
+    if (birthday != null) json['birthday'] = birthday!.millisecondsSinceEpoch;
+    if (gender != null) json['gender'] = gender!.index;
     if (designedForFamilies != null)
       json['designedForFamilies'] = designedForFamilies;
     if (childDirected != null) json['childDirected'] = childDirected;
-    if (testDevices != null && testDevices.isNotEmpty) {
-      assert(testDevices.every((String s) => s != null && s.isNotEmpty));
+    if (testDevices != null && testDevices!.isNotEmpty) {
+      assert(testDevices!.every((String s) => s != null && s.isNotEmpty));
       json['testDevices'] = testDevices;
     }
 
@@ -127,9 +127,9 @@ class AdSize {
   // Private constructor. Apps should use the static constants rather than
   // create their own instances of [AdSize].
   const AdSize._({
-    @required this.width,
-    @required this.height,
-    @required this.adSizeType,
+    required this.width,
+    required this.height,
+    required this.adSizeType,
   });
 
   final int height;
@@ -193,8 +193,8 @@ class AdSize {
 abstract class MobileAd {
   /// Default constructor, used by subclasses.
   MobileAd({
-    @required this.adUnitId,
-    MobileAdTargetingInfo targetingInfo,
+    required this.adUnitId,
+    MobileAdTargetingInfo? targetingInfo,
     this.listener,
   })  : _targetingInfo = targetingInfo ?? const MobileAdTargetingInfo(),
         assert(adUnitId != null && adUnitId.isNotEmpty) {
@@ -202,7 +202,7 @@ abstract class MobileAd {
     _allAds[id] = this;
   }
 
-  static final Map<int, MobileAd> _allAds = <int, MobileAd>{};
+  static final Map<int, MobileAd?> _allAds = <int, MobileAd?>{};
 
   /// Optional targeting info per the native AdMob API.
   MobileAdTargetingInfo get targetingInfo => _targetingInfo;
@@ -211,10 +211,10 @@ abstract class MobileAd {
   /// Identifies the source of ads for your application.
   ///
   /// For testing use a [sample ad unit](https://developers.google.com/admob/ios/test-ads#sample_ad_units).
-  final String adUnitId;
+  final String? adUnitId;
 
   /// Called when the status of the ad changes.
-  MobileAdListener listener;
+  MobileAdListener? listener;
 
   /// An internal id that identifies this mobile ad to the native AdMob plugin.
   ///
@@ -222,7 +222,7 @@ abstract class MobileAd {
   int get id => hashCode;
 
   /// Start loading this ad.
-  Future<bool> load();
+  Future<bool?> load();
 
   /// Show this ad.
   ///
@@ -234,7 +234,7 @@ abstract class MobileAd {
   ///
   /// anchorOffset is the logical pixel offset from the edge of the screen (default 0.0)
   /// anchorType place advert at top or bottom of screen (default bottom)
-  Future<bool> show(
+  Future<bool?> show(
       {double anchorOffset = 0.0,
       double horizontalCenterOffset = 0.0,
       AnchorType anchorType = AnchorType.bottom}) {
@@ -250,13 +250,13 @@ abstract class MobileAd {
   ///
   /// Disposing a banner ad that's been shown removes it from the screen.
   /// Interstitial ads can't be programmatically removed from view.
-  Future<bool> dispose() {
+  Future<bool?> dispose() {
     assert(_allAds[id] != null);
     _allAds[id] = null;
     return _invokeBooleanMethod('disposeAd', <String, dynamic>{'id': id});
   }
 
-  Future<bool> isLoaded() {
+  Future<bool?> isLoaded() {
     return _invokeBooleanMethod('isAdLoaded', <String, dynamic>{
       'id': id,
     });
@@ -269,10 +269,10 @@ class BannerAd extends MobileAd {
   ///
   /// A valid [adUnitId] is required.
   BannerAd({
-    @required String adUnitId,
-    @required this.size,
-    MobileAdTargetingInfo targetingInfo,
-    MobileAdListener listener,
+    required String adUnitId,
+    required this.size,
+    MobileAdTargetingInfo? targetingInfo,
+    MobileAdListener? listener,
   }) : super(
             adUnitId: adUnitId,
             targetingInfo: targetingInfo,
@@ -291,7 +291,7 @@ class BannerAd extends MobileAd {
       : 'ca-app-pub-3940256099942544/2934735716';
 
   @override
-  Future<bool> load() {
+  Future<bool?> load() {
     return _invokeBooleanMethod('loadBannerAd', <String, dynamic>{
       'id': id,
       'adUnitId': adUnitId,
@@ -322,10 +322,10 @@ class BannerAd extends MobileAd {
 /// See the README for more details on using Native Ads.
 class NativeAd extends MobileAd {
   NativeAd({
-    @required String adUnitId,
-    @required this.factoryId,
-    MobileAdTargetingInfo targetingInfo,
-    MobileAdListener listener,
+    required String adUnitId,
+    required this.factoryId,
+    MobileAdTargetingInfo? targetingInfo,
+    MobileAdListener? listener,
     this.customOptions,
   }) : super(
           adUnitId: adUnitId,
@@ -336,7 +336,7 @@ class NativeAd extends MobileAd {
   /// Optional options used to create the [NativeAd].
   ///
   /// These options are passed to the platform's `NativeAdFactory`.
-  final Map<String, dynamic> customOptions;
+  final Map<String, dynamic>? customOptions;
 
   /// An identifier for the factory that creates the Platform view.
   final String factoryId;
@@ -347,7 +347,7 @@ class NativeAd extends MobileAd {
       : 'ca-app-pub-3940256099942544/3986624511';
 
   @override
-  Future<bool> load() {
+  Future<bool?> load() {
     return _invokeBooleanMethod('loadNativeAd', <String, dynamic>{
       'id': id,
       'factoryId': factoryId,
@@ -364,9 +364,9 @@ class InterstitialAd extends MobileAd {
   ///
   /// A valid [adUnitId] is required.
   InterstitialAd({
-    String adUnitId,
-    MobileAdTargetingInfo targetingInfo,
-    MobileAdListener listener,
+    String? adUnitId,
+    MobileAdTargetingInfo? targetingInfo,
+    MobileAdListener? listener,
   }) : super(
             adUnitId: adUnitId,
             targetingInfo: targetingInfo,
@@ -378,7 +378,7 @@ class InterstitialAd extends MobileAd {
       : 'ca-app-pub-3940256099942544/4411468910';
 
   @override
-  Future<bool> load() {
+  Future<bool?> load() {
     return _invokeBooleanMethod('loadInterstitialAd', <String, dynamic>{
       'id': id,
       'adUnitId': adUnitId,
@@ -409,8 +409,8 @@ enum RewardedVideoAdEvent {
 /// all other events.
 typedef RewardedVideoAdListener = void Function(
   RewardedVideoAdEvent event, {
-  String rewardType,
-  int rewardAmount,
+  String? rewardType,
+  int? rewardAmount,
 });
 
 /// An AdMob rewarded video ad.
@@ -463,19 +463,19 @@ class RewardedVideoAd {
   static RewardedVideoAd get instance => _instance;
 
   /// Callback invoked for events in the rewarded video ad lifecycle.
-  RewardedVideoAdListener listener;
+  RewardedVideoAdListener? listener;
 
-  String _userId;
-  String _customData;
+  String? _userId;
+  String? _customData;
 
   /// The user id used in server-to-server reward callbacks
-  String get userId => _userId;
+  String? get userId => _userId;
 
   /// The custom data included in server-to-server reward callbacks
-  String get customData => _customData;
+  String? get customData => _customData;
 
   /// Sets the user id to be used in server-to-server reward callbacks.
-  set userId(String userId) {
+  set userId(String? userId) {
     _invokeBooleanMethod('setRewardedVideoAdUserId', <String, dynamic>{
       'userId': userId,
     });
@@ -483,7 +483,7 @@ class RewardedVideoAd {
   }
 
   /// Sets custom data to be included in server-to-server reward callbacks.
-  set customData(String customData) {
+  set customData(String? customData) {
     _invokeBooleanMethod('setRewardedVideoAdCustomData', <String, dynamic>{
       'customData': customData,
     });
@@ -491,13 +491,13 @@ class RewardedVideoAd {
   }
 
   /// Shows a rewarded video ad if one has been loaded.
-  Future<bool> show() {
+  Future<bool?> show() {
     return _invokeBooleanMethod('showRewardedVideoAd');
   }
 
   /// Loads a rewarded video ad using the provided ad unit ID.
-  Future<bool> load(
-      {@required String adUnitId,
+  Future<bool?> load(
+      {required String adUnitId,
       MobileAdTargetingInfo targetingInfo = const MobileAdTargetingInfo()}) {
     assert(adUnitId.isNotEmpty);
     return _invokeBooleanMethod('loadRewardedVideoAd', <String, dynamic>{
@@ -573,9 +573,9 @@ class FirebaseAdMob {
   };
 
   /// Initialize this plugin for the AdMob app specified by `appId`.
-  Future<bool> initialize(
-      {@required String appId,
-      String trackingId,
+  Future<bool?> initialize(
+      {required String appId,
+      String? trackingId,
       bool analyticsEnabled = false}) {
     assert(appId != null && appId.isNotEmpty);
     assert(analyticsEnabled != null);
@@ -588,26 +588,26 @@ class FirebaseAdMob {
 
   Future<dynamic> _handleMethod(MethodCall call) {
     assert(call.arguments is Map);
-    final Map<dynamic, dynamic> argumentsMap = call.arguments;
-    final RewardedVideoAdEvent rewardedEvent =
+    final Map<dynamic, dynamic>? argumentsMap = call.arguments;
+    final RewardedVideoAdEvent? rewardedEvent =
         _methodToRewardedVideoAdEvent[call.method];
     if (rewardedEvent != null) {
       if (RewardedVideoAd.instance.listener != null) {
         if (rewardedEvent == RewardedVideoAdEvent.rewarded) {
-          RewardedVideoAd.instance.listener(rewardedEvent,
-              rewardType: argumentsMap['rewardType'],
+          RewardedVideoAd.instance.listener!(rewardedEvent,
+              rewardType: argumentsMap!['rewardType'],
               rewardAmount: argumentsMap['rewardAmount']);
         } else {
-          RewardedVideoAd.instance.listener(rewardedEvent);
+          RewardedVideoAd.instance.listener!(rewardedEvent);
         }
       }
     } else {
-      final int id = argumentsMap['id'];
+      final int? id = argumentsMap!['id'];
       if (id != null && MobileAd._allAds[id] != null) {
-        final MobileAd ad = MobileAd._allAds[id];
-        final MobileAdEvent mobileAdEvent = _methodToMobileAdEvent[call.method];
-        if (mobileAdEvent != null && ad.listener != null) {
-          ad.listener(mobileAdEvent);
+        final MobileAd? ad = MobileAd._allAds[id];
+        final MobileAdEvent? mobileAdEvent = _methodToMobileAdEvent[call.method];
+        if (mobileAdEvent != null && ad!.listener != null) {
+          ad.listener!(mobileAdEvent);
         }
       }
     }
@@ -616,8 +616,8 @@ class FirebaseAdMob {
   }
 }
 
-Future<bool> _invokeBooleanMethod(String method, [dynamic arguments]) async {
-  final bool result = await FirebaseAdMob.instance._channel.invokeMethod<bool>(
+Future<bool?> _invokeBooleanMethod(String method, [dynamic arguments]) async {
+  final bool? result = await FirebaseAdMob.instance._channel.invokeMethod<bool>(
     method,
     arguments,
   );
