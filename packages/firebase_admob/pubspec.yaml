@@ -26,5 +26,5 @@ flutter:
       android:
         package: io.flutter.plugins.firebaseadmob
         pluginClass: FirebaseAdMobPlugin
-      ios:
-        pluginClass: FLTFirebaseAdMobPlugin
+#      ios:
+#        pluginClass: FLTFirebaseAdMobPlugin
